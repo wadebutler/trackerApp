@@ -1,45 +1,30 @@
-import React, {useState, useContext} from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Input, Button } from 'react-native-elements';
-import Spacer from '../Components/Spacer';
-import {Context as AuthContext} from '../context/AuthContext';
+import { NavigationEvents } from 'react-navigation';
+import { Context as AuthContext } from '../context/AuthContext';
+import AuthForm from '../Components/AuthForm';
+import NavLink from '../Components/NavLink';
 
-const SignupScreen = ({navigation}) => {
-    const {state, signup} = useContext(AuthContext);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const SignupScreen = () => {
+    const {state, signup, clearErrorMessage, tryLocalSignin} = useContext(AuthContext);
+    
+    useEffect(() => {
+        tryLocalSignin();
+    }, []);
 
     return (
         <View style={style.container}>
-            <Spacer>
-                <Text h3>Sign Up for Tracker</Text>
-            </Spacer>
-            <Spacer>
-                <Input 
-                    label="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                />
-            </Spacer>
-            <Spacer>
-                <Input 
-                    label="Password" 
-                    value={password}
-                    onChangeText={setPassword}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    secureTextEntry
-                />
-            </Spacer>
-            {state.errorMessage ? <Text style={style.errorMessage}>{state.errorMessage}</Text> : null}
-            <Spacer>
-                <Button 
-                    title="Sign Up"
-                    onPress={() => signup({email, password})}
-                />
-            </Spacer>
+            <NavigationEvents onWillFocus={clearErrorMessage} />
+            <AuthForm 
+                headerText="Sign-Up for Tracker"
+                errorMessage={state.errorMessage}
+                submitButtonText="Sign-Up"
+                onSubmit={signup}
+            />
+            <NavLink
+                routeName="Signin"
+                text="Already have an Account? Sign-In instead!"
+            />
         </View>
     );
 }
@@ -55,12 +40,6 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         marginBottom: 200,
-    },
-    errorMessage: {
-        fontSize: 16,
-        color: 'red',
-        marginLeft: 10,
-        marginBottom: 15,
     }
 });
 
