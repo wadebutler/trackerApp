@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import { requestPermissionsAsync, watchPositionAsync, Accuracy } from 'expo-location';
 
 export default (shouldTrack, callback) => {
     const [err, setErr] = useState(null);
-    // const [subscriber, setSubscriber] = useState(null)
 
     useEffect(() => {
         let subscriber;
